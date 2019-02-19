@@ -1,6 +1,6 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title color="primary">
+  <ion-toolbar color="primary">
+    <ion-title text-center>
       Lista de tarefas
     </ion-title>
   </ion-toolbar>
@@ -9,22 +9,33 @@
 <ion-content>
   <ion-grid>
 
-    <ion-row>
-      <ion-col>
-        <ion-input></ion-input>    
+    <ion-row justify-content-center>
+      <ion-col align-self-center size="10">
+        <form [formGroup]="tarefaFormulario" (submit)="cadastrarTarefa()">
+          <ion-item>
+            <label slot="end">
+              <ion-icon name="add"></ion-icon>
+            </label>
+            <ion-input placeholder="Adicione mais tarefas" formControlName="nome"></ion-input>
+          </ion-item>
+        </form>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        {{ task.title }}
-      </ion-col>
-      <ion-col>
-        <ion-button color="danger">
-          <ion-icon name="close"></ion-icon>
-        </ion-button>
-        <ion-button color="success">
-          <ion-icon name="checkmark"></ion-icon>
-        </ion-button>
+        <ion-list lines="none">
+          <ion-item *ngFor="let tarefa of tarefas">
+            <ion-label>{{ tarefa.nome }}</ion-label>
+            <ion-buttons slot="end">
+              <ion-button color="danger" (click)="deletarTarefa(tarefa.id)">
+                <ion-icon name="close"></ion-icon>
+              </ion-button>
+              <ion-button color="success" (click)="tarefaCompleta(tarefa)">
+                <ion-icon name="checkmark"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-list>
       </ion-col>
     </ion-row>
 
