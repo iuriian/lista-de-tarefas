@@ -6,38 +6,24 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid>
-
-    <ion-row justify-content-center>
-      <ion-col align-self-center size="10">
-        <form [formGroup]="tarefaFormulario" (submit)="cadastrarTarefa()">
-          <ion-item>
-            <label slot="end">
-              <ion-icon name="add"></ion-icon>
-            </label>
-            <ion-input placeholder="Adicione mais tarefas" formControlName="nome"></ion-input>
-          </ion-item>
-        </form>
-      </ion-col>
-    </ion-row>
+<ion-content> 
+  <ion-grid no-padding>
     <ion-row>
-      <ion-col>
-        <ion-list lines="none">
-          <ion-item *ngFor="let tarefa of tarefas">
-            <ion-label>{{ tarefa.nome }}</ion-label>
-            <ion-buttons slot="end">
-              <ion-button color="danger" (click)="deletarTarefa(tarefa.id)">
-                <ion-icon name="close"></ion-icon>
-              </ion-button>
-              <ion-button color="success" (click)="tarefaCompleta(tarefa)">
-                <ion-icon name="checkmark"></ion-icon>
-              </ion-button>
-            </ion-buttons>
+      <ion-col no-padding>
+        <ion-list no-padding>
+          <ion-item *ngFor="let tarefa of tarefas" no-padding>
+            <ion-label>{{ tarefa.nome }} <p><small>{{ tarefa.prioridade }}</small></p></ion-label>
+            <ion-icon name="more" (click)="mostrarOpcoes(tarefa.id)"></ion-icon>
           </ion-item>
         </ion-list>
       </ion-col>
     </ion-row>
 
+    
   </ion-grid>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="abrirModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

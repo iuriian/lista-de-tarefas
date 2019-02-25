@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="fecharModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>ADICIONAR TAREFA</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <form [formGroup]="tarefaFormulario" (submit)="cadastrarTarefa()">
+    <ion-item no-padding>
+      <ion-label position="floating">Tarefa</ion-label>
+      <ion-input formControlName="nome"></ion-input>
+    </ion-item>
+    <p *ngIf="nome.errors && nome.touched">Preencha o nome da tarefa.</p>
+    <ion-item margin-top no-padding>
+      <ion-label>Prioridade</ion-label>
+      <ion-select placeholder="Selecione" formControlName="prioridade">
+        <ion-select-option  value="baixa">Baixa</ion-select-option>
+        <ion-select-option value="media">Média</ion-select-option>
+        <ion-select-option value="alta">Alta</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <p *ngIf="prioridade.errors && prioridade.touched">Defina a prioridade da tarefa.</p>
+    <ion-button type="submit" size="default" expand="block" margin-top [disabled]="tarefaFormulario.invalid">
+      ADICIONAR
+    </ion-button> 
+  </form>
+
+</ion-content>

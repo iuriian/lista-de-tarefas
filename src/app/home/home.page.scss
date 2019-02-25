@@ -1,1 +1,14 @@
+ion-header.header::after{
+    background-image: none;
+}
 
+ion-list{
+
+    ion-label{
+        padding-left: 16px;
+        font-weight: bold;
+        p{
+            font-weight: normal
+        }
+    }
+}

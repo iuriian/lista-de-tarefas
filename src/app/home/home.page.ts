@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+
+import { ModalTarefaComponent } from '../modal-tarefa/modal-tarefa.component';
+import { ModalController, PopoverController } from '@ionic/angular';
+import { OpcoesComponent } from '../opcoes/opcoes.component';
+
+import * as firebase from 'firebase/app';
+import 'firebase/firestore';
 
 @Component({
   selector: 'app-home',
@@ -9,69 +16,60 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 export class HomePage {
 
   public tarefaFormulario: FormGroup;
+  private db: any;
+  private ref: any;
+  public tarefas: any[] = [];
+  public mensagem: string;
 
-  public tarefas: any[] = [
-    {
-      id: 1,
-      nome: 'desenvolver front',
-      status: 'ativo'
-    },
-    {
-      id: 2,
-      nome: 'estilizar front',
-      status: 'ativo'
-    },
-    {
-      id: 3,
-      nome: 'desenvolver integração',
-      status: 'ativo'
-    },
-    {
-      id: 4,
-      nome: 'desenvolver filtros',
-      status: 'ativo'
-    },
-    {
-      id: 5,
-      nome: 'desenvolver diretivas',
-      status: 'ativo'
-    },
-    {
-      id: 6,
-      nome: 'desenvolver endpoints',
-      status: 'ativo'
+  constructor(
+    private modalController: ModalController,
+    private popoverController: PopoverController
+  ) {
+
+    if (this.db === undefined) {
+      this.db = firebase.firestore();
     }
-  ];
 
-  constructor() {
-    this.criarFormulario();
+    this.ref = this.db.collection('tarefas');
+    this.recuperarTarefas();
+
   }
 
-  private criarFormulario() {
-    this.tarefaFormulario = new FormGroup({
-      'nome': new FormControl('')
+  // Recupera as tarefas do banco de dados e adiciona ouvintes
+  public recuperarTarefas() {
+    this.ref.onSnapshot(querySnapshot => {
+        if (querySnapshot.size > 0) {
+          this.tarefas = [];
+          querySnapshot.forEach(doc => {
+            const obj = doc.data();
+            obj.id = doc.id;
+            this.tarefas.push(obj);
+          });
+        } else {
+          this.tarefas = [];
+          this.mensagem = 'Não há tarefas cadastradas';
+        }
+      }, error => console.log('erro', error));
+  }
+
+  // Abre o modal de cadastro
+  async abrirModal() {
+    const modal = await this.modalController.create({
+      component: ModalTarefaComponent
     });
+
+    modal.present();
   }
 
-  public cadastrarTarefa() {
-    const obj = {
-      id: this.tarefas[this.tarefas.length - 1].id + 1,
-      nome: this.tarefaFormulario.value.nome
-    };
-    this.tarefas.push(obj);
-    this.tarefaFormulario.reset();
-  }
-
-  public tarefaCompleta(tarefa) {
-    console.log(tarefa);
-  }
-
-  public deletarTarefa(id) {
-    this.tarefas = this.tarefas.filter(element => {
-      return element.id !== id;
+  // Abre as opções de editar e excluir
+  async mostrarOpcoes(id) {
+    const popover = await this.popoverController.create({
+      component: OpcoesComponent,
+      componentProps: {
+        value: id
+      },
+      translucent: true
     });
-    if (this.tarefas.length === 0) {
-      this.tarefas = [];
-    }
+    return await popover.present();
   }
 }
